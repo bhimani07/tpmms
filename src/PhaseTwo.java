@@ -6,7 +6,8 @@ import java.util.*;
 
 public class PhaseTwo {
 
-    PhaseTwo() {}
+    PhaseTwo() {
+    }
 
     Comparator<String> employeeIdAndDateComparator = new Comparator<String>() {
         @Override
@@ -37,7 +38,7 @@ public class PhaseTwo {
     }
 
     int readFileAndDivideIntoBlocks(File file) throws IOException {
-    	System.out.println("Creating Blocks");
+        System.out.println("Creating Blocks");
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String tuple;
         ArrayList<String> blockData = new ArrayList<>();
@@ -45,35 +46,35 @@ public class PhaseTwo {
         int index = 0;
         int count = 0;
         while ((tuple = bufferedReader.readLine()) != null) {
-        	if(count >= Configuration.MAX_TUPLES) {
+            if (count >= Configuration.MAX_TUPLES) {
                 File tempBlock = sortBlock(blockData, index);
                 blockFiles.add(tempBlock);
                 index++;
                 count = 0;
                 blockData.clear();
-           }
+            }
             if (tuple != null) {
                 blockData.add(tuple);
                 count++;
             }
         }
-        if(!blockData.isEmpty()) {
-        	index++;
-        	File tempBlock = sortBlock(blockData, index);
+        if (!blockData.isEmpty()) {
+            index++;
+            File tempBlock = sortBlock(blockData, index);
             blockFiles.add(tempBlock);
         }
-        System.out.println("Total Number Of Blocks: "+index);
+        System.out.println("Total Number Of Blocks: " + index);
         createBufferReaderObjectsOfBlocks(blockFiles);
         return index;
     }
 
     File sortBlock(ArrayList<String> blockData, int index) throws IOException {
-    	FileWriter fileWriter = null;
+        FileWriter fileWriter = null;
         BufferedWriter bufferedWriter = null;
         Collections.sort(blockData, employeeIdAndDateComparator);
         File dir = new File(Configuration.BLOCK_FILE_PATH);
-        if(!dir.exists()) {
-        	dir.mkdirs(); 
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
         File tempBlock = new File(Configuration.BLOCK_FILE_PATH + File.separator + Configuration.BLOCK_NAME + index);
         tempBlock.createNewFile();
@@ -97,7 +98,7 @@ public class PhaseTwo {
     }
 
     void merge(ArrayList<Handler> FileHandler) throws IOException {
-    	System.out.println("Merging the Blocks");
+        System.out.println("Merging the Blocks");
         File outputFile = new File(Configuration.FILE_PATH, Configuration.DUPLICATE_OUTPUT_FILE_NAME);
         FileWriter fileWriter = new FileWriter(outputFile);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -114,7 +115,7 @@ public class PhaseTwo {
             }
         }
         while (priorityQueue.size() > 0) {
-        	Handler block = priorityQueue.poll();
+            Handler block = priorityQueue.poll();
             bufferedWriter.write(block.readAndRemoveFromFile());
             bufferedWriter.newLine();
             if (!block.isEmpty()) {
